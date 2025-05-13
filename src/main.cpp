@@ -25,15 +25,7 @@ void setup() {
 }
 
 void loop() {
-  static uint32_t oldUpdateTime = 0;
-  while (micros() - oldUpdateTime > UPDATE_TIME_MICROS);
-  oldUpdateTime = micros();
-
-  forwardDistanceFilter.update(forwardDistanceSensor.readDistance());
-  leftDistanceFilter.update(leftDistanceSensor.readDistance());
-  rightDistanceFilter.update(rightDistanceSensor.readDistance());
-
-  
+  devicesUpdate();  
   // driveTrainUpdate();
   // intakeUpdate();
 }

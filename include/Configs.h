@@ -2,8 +2,6 @@
 
 #include <Arduino.h>
 
-#define UPDATE_TIME_MICROS 15000
-
 //DriveTrain
 #define IS_GYRO false
 #define IS_DISTANCE_SENSOR true

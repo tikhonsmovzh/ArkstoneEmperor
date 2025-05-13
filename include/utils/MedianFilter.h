@@ -10,6 +10,7 @@ class MedianFilter
 private:
     uint8_t _bufferLenght;
     T *_buffer;
+    T *_copyedBuffer;
     uint8_t currentBuffLenght = 0;
     T _currentValue;
 
@@ -41,12 +42,10 @@ private:
     }
 
     T quickMedian(T *arr, uint8_t lenght){
-        static T *copyedArr = new T[_bufferLenght];
-
         for(uint8_t i = 0; i < lenght; i++)
-            copyedArr[i] = arr[i];
+            _copyedBuffer[i] = arr[i];
 
-        return quickMedianRecursion(copyedArr, 0, lenght - 1, (lenght - 1) / 2);
+        return quickMedianRecursion(_copyedBuffer, 0, lenght - 1, (lenght - 1) / 2);
     }
 
 public:
@@ -55,6 +54,7 @@ public:
         _bufferLenght = bufferLenght + ((bufferLenght + 1) % 2);
 
         _buffer = new T[_bufferLenght];
+        _copyedBuffer = new T[_bufferLenght];
     }
 
     ~MedianFilter(){

@@ -46,6 +46,8 @@ public:
         PDreg = &PDr;
     }
 
+    virtual ~DriveSample(){}
+
     virtual void Start()
     {
         encoderReset();

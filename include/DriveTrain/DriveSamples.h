@@ -35,7 +35,7 @@ public:
 
     bool Execute() override
     { // энкодеры сбрасываются, все норм. ПД тоже сбрасывается
-        if (forwardDistanceSensor.readDistance() > _distance)
+        if (forwardDistanceSensor.getValue() > _distance)
         {
             Drive(ROBOT_SPEED, PDreg->update(rightMotor.getCurrentPosition() - leftMotor.getCurrentPosition()));
             return false;
@@ -59,7 +59,7 @@ public:
 
     bool Execute() override
     {
-        if (forwardDistanceSensor.readDistance() < _distance)
+        if (forwardDistanceSensor.getValue() < _distance)
         {
             Drive(0.0f, -ROBOT_SPEED);
             return false;
@@ -83,9 +83,9 @@ public:
 
     bool Execute() override
     {
-        if (forwardDistanceSensor.readDistance() > _distance)
+        if (forwardDistanceSensor.getValue() > _distance)
         {
-            float errValue = rightDistanceSensor.readDistance() - _distance;
+            float errValue = rightDistanceSensor.getValue() - _distance;
             Drive(ROBOT_SPEED, PDreg->update(errValue));
             return false;
         }
