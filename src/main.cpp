@@ -25,7 +25,8 @@ void setup() {
 }
 
 void loop() {
-  devicesUpdate();  
+  devicesUpdate();
+
   // driveTrainUpdate();
   // intakeUpdate();
 }
