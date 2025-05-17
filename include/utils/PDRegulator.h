@@ -2,43 +2,41 @@
 
 #include <Arduino.h>
 
-template <typename T>
-class PDRegulator{
-private:
-    float _kp, _kd;
 
-    T _oldErr = 0;
+template <typename undefinedType>
+class PDRegulator
+{
+  private:
 
-    uint32_t _lastUpdateTime = 0;
+    float _coefP = 0.0f, _coefD = 0.0f;
+    //  Coefficients for the P, and D regulator corrections
+    undefinedType _prevError = 0;
+    //  Previous error
 
-public:
-    PDRegulator(float kp, float kd){
-        _kp = kp;
-        _kd = kd;
+
+  public:
+
+    void Reset (float setP, float setD)
+    {
+        _coefP = setP;
+        _coefD = setD;
+        //  Reset coefficients
+
+        _prevError = 0;
+        //  reset previous error
     }
 
-    float update(T err){
-        float uP = err * _kp;
 
-        float uD = ((err - _oldErr) / (millis() - _lastUpdateTime)) * _kd;
+    float UpdateCorrection (undefinedType error)
+    {
+        float correctionP =  error * _coefP;
+        float correctionD = (error - _prevError) * _coefD;
+        //  Calculate P and D corrections
 
-        _oldErr = err;
+        _prevError = error;
+        //  Save previous error for future D correction
 
-        _lastUpdateTime = millis();
-
-        return uP + uD;
-    }
-
-    void start(){
-        _lastUpdateTime = millis();
-    }
-
-    void reset(float kp = 0.0f, float kd = 0.0f){
-        _kp = kp;
-        _kd = kd;
-
-        start();
-
-        _oldErr = 0;
+        //  Return the sum of both regulators correction
+        return correctionP + correctionD;
     }
 };
