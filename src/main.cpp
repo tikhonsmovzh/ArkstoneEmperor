@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "Devices.h"
 #include "Configs.h"
+#include "DriveTrain/DriveTrain.h"
 // #include "DriveTrain/DriveTrain.h"
 // #include "Intake.h"
 
@@ -9,19 +10,22 @@ void setup() {
 
   devicesBegin();
 
-  // while (!startButton.readState());
-  // while (startButton.readState());
+  while (!startButton.readState());
+  while (startButton.readState());
   
   // intakeBegin();
   // detectFloor();
 
-  // driveTrainBegin();
+  driveTrainBegin();
   
-  // while (!startButton.readState());
-  // while (startButton.readState());
+  while (!startButton.readState());
+  while (startButton.readState());
 
   // intakeStart();
-  // driveTrainStart();
+  driveTrainStart();
+
+  brushServoLeft.write(0);
+  brushServoRight.write(180);
 }
 
 void loop() {
@@ -29,12 +33,7 @@ void loop() {
 
   delay(15);
 
-  Serial.print("forward = ");
-  Serial.print(forwardDistanceFilter.getCurrentValue());
-  Serial.print("  left = ");
-  Serial.print(leftDistanceFilter.getCurrentValue());
-  Serial.print("  right = ");
-  Serial.println(rightDistanceFilter.getCurrentValue());
+  driveTrainUpdate();
 
   // driveTrainUpdate();
   // intakeUpdate();

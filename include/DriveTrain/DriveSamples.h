@@ -35,9 +35,9 @@ public:
 
     bool Execute() override
     { // энкодеры сбрасываются, все норм. ПД тоже сбрасывается
-        if (forwardDistanceSensor.getValue() > _distance)
+        if (forwardDistanceFilter.getCurrentValue() > _distance)
         {
-            Drive(ROBOT_SPEED, PDreg->update(rightMotor.getCurrentPosition() - leftMotor.getCurrentPosition()));
+            Drive(forward, PDreg->update(rightMotor.getCurrentPosition() - leftMotor.getCurrentPosition()));
             return false;
         }
 
@@ -59,9 +59,9 @@ public:
 
     bool Execute() override
     {
-        if (forwardDistanceSensor.getValue() < _distance)
+        if (forwardDistanceFilter.getCurrentValue() < _distance)
         {
-            Drive(0.0f, -ROBOT_SPEED);
+            Drive(stop, -ROBOT_SPEED);
             return false;
         }
 
@@ -83,10 +83,10 @@ public:
 
     bool Execute() override
     {
-        if (forwardDistanceSensor.getValue() > _distance)
+        if (forwardDistanceFilter.getCurrentValue() > _distance)
         {
-            float errValue = rightDistanceSensor.getValue() - _distance;
-            Drive(ROBOT_SPEED, PDreg->update(errValue));
+            float errValue = rightDistanceFilter.getCurrentValue() - _distance;
+            Drive(forward, PDreg->update(errValue));
             return false;
         }
 
@@ -110,7 +110,7 @@ public:
     {
         if (((leftMotor.getCurrentPosition() + rightMotor.getCurrentPosition()) / 2) > _encPos)
         {
-            Drive(-ROBOT_SPEED, PDreg->update(rightMotor.getCurrentPosition() - leftMotor.getCurrentPosition()));
+            Drive(backward, PDreg->update(rightMotor.getCurrentPosition() - leftMotor.getCurrentPosition()));
             return false;
         }
 
@@ -139,7 +139,7 @@ public:
 
         if (abs(error) > ANGLE_ERROR)
         {
-            Drive(0.0f, ROBOT_SPEED * sgn(error));
+            Drive(stop, ROBOT_SPEED * sgn(error));
             return false;
         }
 
@@ -177,7 +177,7 @@ public:
 
             if (abs(error) > ANGLE_ERROR)
             {
-                Drive(0.0f, ROBOT_SPEED * sgn(error));
+                Drive(stop, ROBOT_SPEED * sgn(error));
                 return false;
             }
 
@@ -189,7 +189,7 @@ public:
 
             if (abs(error) > ANGLE_ERROR)
             {
-                Drive(0.0f, ROBOT_SPEED * sgn(error));
+                Drive(stop, ROBOT_SPEED * sgn(error));
                 return false;
             }
 

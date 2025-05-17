@@ -10,10 +10,17 @@
 class DriveSample
 {
 protected:
-    void Drive(float forward, float turn)
+    enum Direction{
+        backward = -1,
+        stop = 0,
+        forward = 1
+    };
+
+    void Drive(Direction direction, float turn) // direction = (-1, 0, 1)
     {
-        leftMotor.setPower(forward + turn);
-        rightMotor.setPower(forward - turn);
+        float speed = ROBOT_SPEED * direction - turn;
+        rightMotor.setPower(speed + turn);
+        leftMotor.setPower(speed - turn);
     }
 
     float GetOriantation()
@@ -29,7 +36,7 @@ protected:
 
     void dropProcess()
     {
-        Drive(0.0, 0.0);
+        Drive(stop, 0.0);
         encoderReset();
     }
 

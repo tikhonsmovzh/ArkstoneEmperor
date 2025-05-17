@@ -26,9 +26,11 @@ DcMotor separatorMotor(&dcExpansion3, 2);
 TCS34725ColorSensor separatorColorSensor(&hardwareWire);
 TCS34725ColorSensor clampColorSenor(&softwareWire);
 
-DistanceSensor forwardDistanceSensor(5, 6);
-DistanceSensor leftDistanceSensor(3, 4);
-DistanceSensor rightDistanceSensor(8, 7);
+// black list 2; 5;
+
+DistanceSensor forwardDistanceSensor(7, 4);
+DistanceSensor leftDistanceSensor(9, 3);
+DistanceSensor rightDistanceSensor(6, 8);
 
 MedianFilter<uint16_t> forwardDistanceFilter(0);
 MedianFilter<uint16_t> leftDistanceFilter(0);
@@ -37,6 +39,7 @@ MedianFilter<uint16_t> rightDistanceFilter(0);
 BNO055Gyro gyro(&hardwareWire);
 
 Button startButton(2);
+Button forwardtButton(2);
 
 Servo clampServo;
 Servo brushServoLeft, brushServoRight;
@@ -44,8 +47,8 @@ Servo brushServoLeft, brushServoRight;
 void devicesBegin(){
     // clampServo.attach(11);
 
-    // brushServoLeft.attach(12);
-    // brushServoRight.attach(13);
+    brushServoLeft.attach(10);
+    brushServoRight.attach(5);
 
     hardwareWire.begin();
     // softwareWire.begin();
@@ -61,6 +64,7 @@ void devicesBegin(){
     rightDistanceSensor.begin();
 
     startButton.begin();
+    forwardtButton.begin();
 
     // gyro.begin();
 
