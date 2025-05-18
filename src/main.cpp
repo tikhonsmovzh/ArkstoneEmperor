@@ -31,8 +31,6 @@ void setup() {
 void loop() {
   devicesUpdate();
 
-  delay(15);
-
   driveTrainUpdate();
 
   // driveTrainUpdate();

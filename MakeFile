@@ -1,0 +1,5 @@
+upload: build
+	C:\Users\tikho\AppData\Local\Arduino15\packages\arduino\tools\avrdude\6.3.0-arduino17\bin\avrdude.exe -Cavrdude.conf -v -V -patmega328p -carduino "-PCOM5" -b115200 -D -Uflash:w:.\.pio\build\nanoatmega328\firmware.hex:i
+
+build:
+	C:\Users\tikho\.platformio\penv\Scripts\platformio.exe run

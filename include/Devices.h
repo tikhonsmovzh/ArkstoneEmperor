@@ -10,6 +10,8 @@
 #include <Servo.h>
 #include "utils/MedianFilter.h"
 #include "utils/ISRValue.h"
+#include "utils/ElapsedTime.h"
+#include "Configs.h"
 
 HardwareWire hardwareWire;
 SoftwareWire softwareWire(2, 3);
@@ -74,8 +76,14 @@ void devicesBegin(){
     rightMotor.begin();
 }
 
+ElapseTime _deviceUpdateTime;
+
 void devicesUpdate(){
-    forwardDistanceFilter.update(forwardDistanceSensor.readDistance());
-    leftDistanceFilter.update(leftDistanceSensor.readDistance());
-    rightDistanceFilter.update(rightDistanceSensor.readDistance());
+    if(_deviceUpdateTime.milliseconds() > 6){
+        forwardDistanceFilter.update(forwardDistanceSensor.readDistance());
+        leftDistanceFilter.update(leftDistanceSensor.readDistance());
+        rightDistanceFilter.update(rightDistanceSensor.readDistance());
+
+        _deviceUpdateTime.reset();
+    }
 }
