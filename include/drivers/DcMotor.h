@@ -80,7 +80,10 @@ public:
 
         wire->requestFrom(address, 2);
 
-        return (wire->read() * 256 + wire->read()) / 100.0f;
+        byte b1 = wire->read();
+        byte b2 = wire->read();
+
+        return (b1 * 256 + b2) / 100.0f;
     }
 };
 
@@ -198,5 +201,9 @@ public:
 
     void softwareEncoderReset(){
         _encoderResetPos = readRawCurrentPosition();
+    }
+
+    void setVoltadge(float voltadge){
+        setPower(voltadge / _expansion->readVoltadge());
     }
 };

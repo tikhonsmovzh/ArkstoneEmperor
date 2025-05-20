@@ -23,12 +23,11 @@ ElapseTime _clampTimer, _separartorDefendTimer;
 
 void intakeBegin()
 {
-    separatorMotor.setMaxPower(SEPARATOR_MAX_POWER);
-
     brushServoLeft.write(90);
     brushServoRight.write(90);
 
-    brushMotor.setPower(0.0);
+    brushMotor.setDirection(REVERSE);
+    brushMotor.setPower(1.0);
 }
 
 void intakeStart()
@@ -83,7 +82,7 @@ void intakeUpdate()
 
     if (abs(separatorErr) > SEPARATOR_SENS)
     {
-        separatorMotor.setPower(_separatorRegulator.update(separatorErr));
+        separatorMotor.setVoltadge(max(min(SEPARATOR_MAX_VOLTADGE, _separatorRegulator.update(separatorErr)), -SEPARATOR_MAX_VOLTADGE));
 
         if (_separartorDefendTimer.seconds() > BRUSH_DEFEND_TIMER)
         {
