@@ -10,6 +10,7 @@
 #define EXPANSION_RESET 0x27
 #define EXPANSION_ENABLE 0x25
 #define EXPANSION_RESET_TIME 1000
+#define EXPANSION_GET_VOLTADGE 0x53
 
 #define REQUEST_MOTOR_CURRENT_C1 0x54
 #define REQUEST_MOTOR_CURRENT_C2 0x55
@@ -19,6 +20,8 @@
 
 #define MOTOR_POSITION_RESET_C1 0x4C
 #define MOTOR_POSITION_RESET_C2 0x4D
+
+#define MOTOR_DELAY 2
 
 enum ZeroPowerBehavior
 {
@@ -71,6 +74,14 @@ public:
     {
         return _enabled;
     }
+
+    float readVoltadge(){
+        wire->write8(address, EXPANSION_GET_VOLTADGE);
+
+        wire->requestFrom(address, 2);
+
+        return (wire->read() * 256 + wire->read()) / 100.0f;
+    }
 };
 
 class DcMotor
@@ -88,7 +99,7 @@ class DcMotor
 
     int32_t _encoderResetPos = 0;
 
-    int32_t getRawCurrentPosition()
+    int32_t readRawCurrentPosition()
     {
         _expansion->wire->write8(_expansion->address, _channel == 1 ? REQUEST_MOTOR_POSITION_C1 : REQUEST_MOTOR_POSITION_C2);
 
@@ -124,22 +135,16 @@ public:
 
     void setMaxPower(float maxPower){
         _maxPower = maxPower;
-        
-        setPower(_lastFloatPower);
     }
 
     void setZeroPowerBehavior(bool behavior)
     {
         _zeroPowerBehavior = behavior;
-        
-        setPower(_lastFloatPower);
     }
 
     void setDirection(bool direction)
     {
         _direction = direction;
-
-        setPower(_lastFloatPower);
     }
 
     float getPower(){
@@ -162,6 +167,8 @@ public:
             _lastPower = intPower;
 
             _expansion->wire->write2x8(_expansion->address, _channel == 1 ? MOTOR_SET_POWER_C1 : MOTOR_SET_POWER_C2, (uint8_t)intPower);
+
+            delay(MOTOR_DELAY);
         }
     }
 
@@ -176,18 +183,20 @@ public:
         return ((int16_t)(buf[0] * 256 + buf[1]) * (_direction ? -1 : 1)) / 1000.0f;
     }
 
-    int32_t getCurrentPosition(){
-        return getRawCurrentPosition() - _encoderResetPos;
+    int32_t readCurrentPosition(){
+        return readRawCurrentPosition() - _encoderResetPos;
     }
 
     void resetEncoder()
     {
         _expansion->wire->write8(_expansion->address, _channel == 1 ? MOTOR_POSITION_RESET_C1 : MOTOR_POSITION_RESET_C2);
 
+        delay(MOTOR_DELAY);
+
         _encoderResetPos = 0;
     }
 
     void softwareEncoderReset(){
-        _encoderResetPos = getRawCurrentPosition();
+        _encoderResetPos = readRawCurrentPosition();
     }
 };

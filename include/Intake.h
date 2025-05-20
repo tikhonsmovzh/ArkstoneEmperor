@@ -79,7 +79,7 @@ void intakeUpdate()
 {
     updateColorSensors();
 
-    int32_t separatorErr = _targetSeparatorPos - separatorMotor.getCurrentPosition();
+    int32_t separatorErr = _targetSeparatorPos - separatorMotor.readCurrentPosition();
 
     if (abs(separatorErr) > SEPARATOR_SENS)
     {
