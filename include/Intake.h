@@ -84,11 +84,11 @@ void intakeUpdate()
     {
         separatorMotor.writeVoltadge(max(min(SEPARATOR_MAX_VOLTADGE, _separatorRegulator.update(separatorErr)), -SEPARATOR_MAX_VOLTADGE));
 
-        if (_separartorDefendTimer.seconds() > BRUSH_DEFEND_TIMER)
-        {
-            _targetSeparatorPos -= sgn(separatorErr) * SEPARATOR_MOTOR_STEP;
-            _separartorDefendTimer.reset();
-        }
+        // if (_separartorDefendTimer.seconds() > BRUSH_DEFEND_TIMER)
+        // {
+        //     _targetSeparatorPos -= sgn(separatorErr) * SEPARATOR_MOTOR_STEP;
+        //     _separartorDefendTimer.reset();
+        // }
     }
     else
     {

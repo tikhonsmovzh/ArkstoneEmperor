@@ -21,7 +21,7 @@
 #define MOTOR_POSITION_RESET_C1 0x4C
 #define MOTOR_POSITION_RESET_C2 0x4D
 
-#define MOTOR_DELAY 2
+#define MOTOR_DELAY 1
 
 enum ZeroPowerBehavior
 {
@@ -91,6 +91,7 @@ public:
 
 class DcMotor
 {
+private:
     DcExpansion *_expansion;
 
     uint8_t _channel;

@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "Devices.h"
 #include "Configs.h"
-#include "DriveTrain/DriveTrain.h"
+// #include "DriveTrain/DriveTrain.h"
 #include "Intake.h"
 
 void setup() {
@@ -9,17 +9,21 @@ void setup() {
 
   devicesBegin();
 
+  startButton.setReversed(true);
+
   while (!startButton.readState());
   while (startButton.readState());
   
   // driveTrainBegin();
-  // intakeBegin();
+  intakeBegin();
   // detectFloor();
+
+  delay(1000);
   
   while (!startButton.readState());
   while (startButton.readState());
 
-  // intakeStart();
+  intakeStart();
   // driveTrainStart();
 }
 
@@ -27,7 +31,5 @@ void loop() {
   devicesUpdate();
 
   // driveTrainUpdate();
-
-  // driveTrainUpdate();
-  // intakeUpdate();
+  intakeUpdate();
 }

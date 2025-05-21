@@ -14,7 +14,7 @@
 #include "Configs.h"
 
 HardwareWire hardwareWire;
-SoftwareWire softwareWire(2, 3);
+SoftWire softwareWire(A2, A3);
 
 DcExpansion dcExpansion1(1, &hardwareWire);
 DcExpansion dcExpansion3(3, &hardwareWire);
@@ -27,8 +27,6 @@ DcMotor separatorMotor(&dcExpansion1, 1);
 
 TCS34725ColorSensor separatorColorSensor(&hardwareWire);
 TCS34725ColorSensor clampColorSenor(&softwareWire);
-
-// black list 2; 5;
 
 DistanceSensor forwardDistanceSensor(11, 10);
 DistanceSensor leftDistanceSensor(8, 9);
@@ -53,13 +51,13 @@ void devicesBegin(){
     brushServoRight.attach(5);
 
     hardwareWire.begin();
-    // softwareWire.begin();
+    softwareWire.begin();
 
     dcExpansion1.begin();
     dcExpansion3.begin();
 
-    // separatorColorSensor.begin();
-    // clampColorSenor.begin();
+    separatorColorSensor.begin();
+    clampColorSenor.begin();
 
     forwardDistanceSensor.begin();
     leftDistanceSensor.begin();
