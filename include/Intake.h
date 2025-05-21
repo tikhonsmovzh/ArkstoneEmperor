@@ -27,12 +27,12 @@ void intakeBegin()
     brushServoRight.write(90);
 
     brushMotor.setDirection(REVERSE);
-    brushMotor.setPower(1.0);
+    brushMotor.writePower(0.0f);
 }
 
 void intakeStart()
 {
-    separatorMotor.resetEncoder();
+    separatorMotor.writeResetEncoder();
     clampServo.write(CLAMP_SERVO_CALMP_POS);
     _separatorRegulator.start();
     _clampTimer.reset();
@@ -40,7 +40,7 @@ void intakeStart()
 
     brushServoLeft.write(90 + BRUSH_SERVO_SPEED);
     brushServoRight.write(90 - BRUSH_SERVO_SPEED);
-    brushMotor.setPower(BRUSH_MOTOR_POWER);
+    brushMotor.writePower(BRUSH_MOTOR_POWER);
 }
 
 void updateColorSensors()
@@ -82,7 +82,7 @@ void intakeUpdate()
 
     if (abs(separatorErr) > SEPARATOR_SENS)
     {
-        separatorMotor.setVoltadge(max(min(SEPARATOR_MAX_VOLTADGE, _separatorRegulator.update(separatorErr)), -SEPARATOR_MAX_VOLTADGE));
+        separatorMotor.writeVoltadge(max(min(SEPARATOR_MAX_VOLTADGE, _separatorRegulator.update(separatorErr)), -SEPARATOR_MAX_VOLTADGE));
 
         if (_separartorDefendTimer.seconds() > BRUSH_DEFEND_TIMER)
         {
@@ -93,7 +93,7 @@ void intakeUpdate()
     else
     {
         _separartorDefendTimer.reset();
-        separatorMotor.setPower(0.0f);
+        separatorMotor.writePower(0.0f);
     }
 
     if (abs(separatorErr) < SEPARATOR_SENS && puckColor != WHITE)

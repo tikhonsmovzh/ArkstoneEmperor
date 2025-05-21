@@ -10,7 +10,8 @@
 class DriveSample
 {
 protected:
-    enum Direction{
+    enum Direction
+    {
         backward = -1,
         stop = 0,
         forward = 1
@@ -22,12 +23,15 @@ protected:
         float left = speed - turn;
         float right = speed + turn;
         float absedMax = max(abs(right), abs(left));
-        if (absedMax > 1){
+
+        if (absedMax > 1)
+        {
             right /= absedMax;
             left /= absedMax;
         }
-        leftMotor.setPower(left);
-        rightMotor.setPower(right);
+
+        leftMotor.writePower(left);
+        rightMotor.writePower(right);
     }
 
     float GetOriantation()
@@ -60,7 +64,7 @@ public:
         PDreg = &PDr;
     }
 
-    virtual ~DriveSample(){}
+    virtual ~DriveSample() {}
 
     virtual void Start()
     {

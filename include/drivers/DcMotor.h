@@ -63,7 +63,8 @@ public:
         if (_enabled)
             return;
 
-        while (millis() - _resetTime < EXPANSION_RESET_TIME);
+        while (millis() - _resetTime < EXPANSION_RESET_TIME)
+            ;
 
         wire->write8(address, EXPANSION_ENABLE);
 
@@ -75,7 +76,8 @@ public:
         return _enabled;
     }
 
-    float readVoltadge(){
+    float readVoltadge()
+    {
         wire->write8(address, EXPANSION_GET_VOLTADGE);
 
         wire->requestFrom(address, 2);
@@ -133,10 +135,11 @@ public:
         if (!_expansion->isEnabled())
             _expansion->enable();
 
-        resetEncoder();
+        writeResetEncoder();
     }
 
-    void setMaxPower(float maxPower){
+    void setMaxPower(float maxPower)
+    {
         _maxPower = maxPower;
     }
 
@@ -150,11 +153,12 @@ public:
         _direction = direction;
     }
 
-    float getPower(){
+    float getPower()
+    {
         return _lastFloatPower;
     }
 
-    void setPower(float power)
+    void writePower(float power)
     {
         _lastFloatPower = power;
 
@@ -175,7 +179,7 @@ public:
         }
     }
 
-    float getCurrent()
+    float readCurrent()
     {
         _expansion->wire->write8(_expansion->address, _channel == 1 ? REQUEST_MOTOR_CURRENT_C1 : REQUEST_MOTOR_CURRENT_C2);
 
@@ -186,11 +190,12 @@ public:
         return ((int16_t)(buf[0] * 256 + buf[1]) * (_direction ? -1 : 1)) / 1000.0f;
     }
 
-    int32_t readCurrentPosition(){
+    int32_t readCurrentPosition()
+    {
         return readRawCurrentPosition() - _encoderResetPos;
     }
 
-    void resetEncoder()
+    void writeResetEncoder()
     {
         _expansion->wire->write8(_expansion->address, _channel == 1 ? MOTOR_POSITION_RESET_C1 : MOTOR_POSITION_RESET_C2);
 
@@ -199,11 +204,13 @@ public:
         _encoderResetPos = 0;
     }
 
-    void softwareEncoderReset(){
+    void softwareEncoderReset()
+    {
         _encoderResetPos = readRawCurrentPosition();
     }
 
-    void setVoltadge(float voltadge){
-        setPower(voltadge / _expansion->readVoltadge());
+    void writeVoltadge(float voltadge)
+    {
+        writePower(voltadge / _expansion->readVoltadge());
     }
 };

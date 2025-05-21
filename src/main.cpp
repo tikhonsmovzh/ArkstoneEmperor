@@ -21,14 +21,6 @@ void setup() {
 
   // intakeStart();
   // driveTrainStart();
-
-  brushServoLeft.write(180);
-  brushServoRight.write(0);
-
-  clampServo.write(100);
-
-  brushMotor.setDirection(REVERSE);
-  brushMotor.setPower(1.0f);
 }
 
 void loop() {
