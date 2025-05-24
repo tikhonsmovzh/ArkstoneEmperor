@@ -96,7 +96,7 @@ private:
 
     uint8_t _channel;
 
-    bool _direction, _zeroPowerBehavior;
+    bool _motorDirerction, _encoderDirection, _zeroPowerBehavior;
 
     int8_t _lastPower = 0;
     float _lastFloatPower = 0.0f;
@@ -118,16 +118,17 @@ private:
         ticks = (ticks * 256) + buf[2];
         ticks = (ticks * 256) + buf[3];
 
-        return (int32_t)(ticks) * (_direction ? -1 : 1);
+        return (int32_t)(ticks) * (_encoderDirection ? -1 : 1);
     }
 
 public:
-    DcMotor(DcExpansion *expansion, uint8_t channel, bool zeroPowerBehavior = true, bool direction = false, float maxPower = 1.0f)
+    DcMotor(DcExpansion *expansion, uint8_t channel, bool zeroPowerBehavior = true, bool motorDirerction = false, bool encoderDirection = false, float maxPower = 1.0f)
     {
         _expansion = expansion;
         _channel = channel;
         _zeroPowerBehavior = zeroPowerBehavior;
-        _direction = direction;
+        _motorDirerction = motorDirerction;
+        _encoderDirection = encoderDirection;
         _maxPower = maxPower;
     }
 
@@ -151,7 +152,17 @@ public:
 
     void setDirection(bool direction)
     {
-        _direction = direction;
+        _motorDirerction = direction;
+        _encoderDirection = direction;
+    }
+
+    void setMotorDirection(bool direction)
+    {
+        _motorDirerction = direction;
+    }
+
+    void setEncoderDirection(bool direction){
+        _encoderDirection = direction;
     }
 
     float getPower()
@@ -165,7 +176,7 @@ public:
 
         int8_t intMaxPower = 100 * _maxPower;
 
-        int8_t intPower = min(intMaxPower, max(-intMaxPower, power * (_direction ? -100.0f : 100.0f)));
+        int8_t intPower = min(intMaxPower, max(-intMaxPower, power * (_motorDirerction ? -100.0f : 100.0f)));
 
         if (intPower == 0 && _zeroPowerBehavior)
             intPower = MOTOR_BRAKE_MOD;
@@ -188,7 +199,7 @@ public:
         uint8_t buf[2];
         _expansion->wire->readBytes(buf, 2);
 
-        return ((int16_t)(buf[0] * 256 + buf[1]) * (_direction ? -1 : 1)) / 1000.0f;
+        return ((int16_t)(buf[0] * 256 + buf[1]) * (_motorDirerction ? -1 : 1)) / 1000.0f;
     }
 
     int32_t readCurrentPosition()

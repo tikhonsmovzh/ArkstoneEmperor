@@ -10,9 +10,11 @@ ElapseTime _Timer;
 
 void driveTrainBegin()
 {
-    PDRegulator<float> MainPDregulator(0.1f, 0.1f); // здесь надо вставить каэфициенты для первого действия (у нас это DriveForwardToTheLimit)
+    rightMotor.setEncoderDirection(REVERSE);
 
-    _trajectory.enqueue(new DriveForwardToTheLimit(MainPDregulator, ETALON_DISTANCE));
+    PDRegulator<int32_t> MainPDregulator(0.1f, 0.1f); // здесь надо вставить каэфициенты для первого действия (у нас это DriveForwardToTheLimit)
+
+    _trajectory.enqueue(new TurnByLocalCoordinates(MainPDregulator, -90));
 
     // _trajectory.enqueue(new DriveForwardToTheLimit(MainPDregulator, ETALON_DISTANCE));
 
@@ -47,23 +49,27 @@ void driveTrainStart()
 {
     _Timer.reset();
 
-    if (!_trajectory.isEmpty())
+    if (!_trajectory.isEmpty()){
+        _trajectory.front()->ResetPd();
         _trajectory.front()->Start();
+    }
 }
 
 void driveTrainUpdate()
 {
-    if (_trajectory.isEmpty())
+    if (_trajectory.isEmpty()){
         return;
+    }
 
-    if (_trajectory.front()->Execute() || (EXECUTION_LIMIT - _Timer.seconds()) > TIME_ERROR)
-    { // прирывание по времени
+    bool E_Ans = _trajectory.front()->Execute();    // || (EXECUTION_LIMIT - _Timer.seconds()) > TIME_ERROR
+    if (E_Ans)
+    {
         delete _trajectory.frontAndDequeue();
 
         if (!_trajectory.isEmpty())
         {
-            _trajectory.front()->Start();
             _trajectory.front()->ResetPd();
+            _trajectory.front()->Start();
         }
     }
 }

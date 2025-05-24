@@ -124,13 +124,13 @@ public:
         _wire->write(_integrationTime);
 
         _wire->write(TCS34725_COMAND | TCS34725_ENABLE);
-        _wire->write(TCS34725_ENABLE_PON);
+        _wire->write(TCS34725_ENABLE_PON & 0xFF);
 
         _wire->endTransmission();
 
         delay(3);
 
-        _wire->write2x8(TCS34725_ADDRESS, TCS34725_COMAND | TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN);
+        _wire->write2x8(TCS34725_ADDRESS, TCS34725_COMAND | TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN & 0xFF);
     }
 
     Color readRawRGB(){

@@ -20,8 +20,8 @@ protected:
     void Drive(Direction direction, float turn) // direction = (-1, 0, 1)
     {
         float speed = ROBOT_SPEED * direction;
-        float left = speed - turn;
-        float right = speed + turn;
+        float left = speed + turn;
+        float right = speed - turn;
         float absedMax = max(abs(right), abs(left));
 
         if (absedMax > 1)
@@ -30,6 +30,10 @@ protected:
             left /= absedMax;
         }
 
+        Serial.print("left motor: ");
+        Serial.println(left);
+        Serial.print("right motor: ");
+        Serial.println(right);
         leftMotor.writePower(left);
         rightMotor.writePower(right);
     }
@@ -51,7 +55,7 @@ protected:
         encoderReset();
     }
 
-    PDRegulator<float> *PDreg;
+    PDRegulator<int32_t> *PDreg;
 
 public:
     float kp = 1.0f;
@@ -59,7 +63,7 @@ public:
 
     DriveSample() {}; // для очереди
 
-    DriveSample(PDRegulator<float> &PDr)
+    DriveSample(PDRegulator<int32_t> &PDr)
     {
         PDreg = &PDr;
     }

@@ -19,7 +19,7 @@ enum ColorType
 
 ColorType floorColor = WHITE, puckColor = WHITE, ourColor = RED;
 
-ElapseTime _clampTimer, _separartorDefendTimer;
+ElapseTime _clampTimer, _separartorDefendTimer, _separatorTimer;
 
 void intakeBegin()
 {
@@ -80,28 +80,29 @@ void intakeUpdate()
 
     int32_t separatorErr = _targetSeparatorPos - separatorMotor.readCurrentPosition();
 
+    separatorMotor.writeVoltadge(max(min(SEPARATOR_MAX_VOLTADGE, _separatorRegulator.update(separatorErr)), -SEPARATOR_MAX_VOLTADGE));
+
     if (abs(separatorErr) > SEPARATOR_SENS)
     {
-        separatorMotor.writeVoltadge(max(min(SEPARATOR_MAX_VOLTADGE, _separatorRegulator.update(separatorErr)), -SEPARATOR_MAX_VOLTADGE));
+        _separatorTimer.reset();
 
-        // if (_separartorDefendTimer.seconds() > BRUSH_DEFEND_TIMER)
-        // {
-        //     _targetSeparatorPos -= sgn(separatorErr) * SEPARATOR_MOTOR_STEP;
-        //     _separartorDefendTimer.reset();
-        // }
+        if (_separartorDefendTimer.seconds() > BRUSH_DEFEND_TIMER)
+        {
+            _targetSeparatorPos -= sgn(separatorErr) * SEPARATOR_MOTOR_STEP;
+            _separartorDefendTimer.reset();
+        }
     }
     else
     {
         _separartorDefendTimer.reset();
-        separatorMotor.writePower(0.0f);
     }
 
-    if (abs(separatorErr) < SEPARATOR_SENS && puckColor != WHITE)
+    if (abs(separatorErr) < SEPARATOR_SENS && puckColor != WHITE && _separatorTimer.seconds() > SEPARATOR_DELAY)
     {
         if (puckColor == ourColor)
-            _targetSeparatorPos += SEPARATOR_MOTOR_STEP;
-        else
             _targetSeparatorPos -= SEPARATOR_MOTOR_STEP;
+        else
+            _targetSeparatorPos += SEPARATOR_MOTOR_STEP;
     }
 
     if (floorColor == ourColor)
