@@ -160,9 +160,9 @@ private:
 public:
     TurnByLocalCoordinates(PDRegulator<int32_t> &PDr, float targetTurn) : DriveSample(PDr)
     {
-        _targetTurn = targetTurn;
-        kp = 0.017f; // нужны норм каэфициенты!
-        kd = 0.0f;
+        _targetTurn = chopDegrees(targetTurn);
+        kp = 1.0f; // нужны норм каэфициенты!
+        kd = 1.0f;
     }
 
     void Start() override
@@ -189,23 +189,20 @@ public:
         }
         else
         {
-            float turn = chopDegrees(((leftMotor.readCurrentPosition() - rightMotor.readCurrentPosition()) * 100) / ((float)SINGLE_ENCODER_STEP * 180.0f * (float)WHEEL_DISTANCE));
-            
-            float error = chopDegrees(_targetTurn - turn);
+            float Angle = (DIAMETR * PI) / SINGLE_ENCODER_STEP * leftMotor.readCurrentPosition();
 
-            Serial.print("error: ");
-            Serial.println(error);
-            Serial.print("left e: ");
-            Serial.println(leftMotor.readCurrentPosition());
-            Serial.print("right e: ");
-            Serial.println(rightMotor.readCurrentPosition());
-            Serial.print("turn v: ");
-            Serial.println(turn);
+            float angle = (Angle / WHEEL_DISTANCE) / PI * 180;
+            angle = chopDegrees(angle);
+
+            float error = chopDegrees(_targetTurn - angle);
+            
+
             if (abs(error) > ANGLE_ERROR)
             {
                 Drive(stop, ROBOT_SPEED * sgn(error));
                 return false;
             }
+
             dropProcess();
             Serial.println("END");
             return true;

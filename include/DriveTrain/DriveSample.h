@@ -29,11 +29,6 @@ protected:
             right /= absedMax;
             left /= absedMax;
         }
-
-        Serial.print("left motor: ");
-        Serial.println(left);
-        Serial.print("right motor: ");
-        Serial.println(right);
         leftMotor.writePower(left);
         rightMotor.writePower(right);
     }
