@@ -12,12 +12,12 @@
 
 /*
 enum SimpleActions{
-    DriveToWall,        // +
-    TurnOnWall,         // +
-    DriveAlongWall,     // +
-    DriveOnEncoder,     // +
-    TurnLocal,          // +
-    TurnGlobal          // +
+    DriveToWall,        // + +
+    TurnOnWall,         // + -
+    DriveAlongWall,     // + -
+    DriveOnEncoder,     // + -
+    TurnLocal,          // + +
+    TurnGlobal          // + -
 };
 */
 
@@ -81,19 +81,27 @@ public:
     DrivingAlongTheWall(PDRegulator<int32_t> &PDr, float distance) : DriveSample(PDr)
     {
         _distance = distance;
-        kp = 1.0f; // нужны норм каэфициенты!
-        kd = 1.0f;
+        kp = 0.005f; // нужны норм каэфициенты!
+        kd = 0.000000005f;
     }
 
     bool Execute() override
     {
         if (forwardDistanceFilter.getCurrentValue() > _distance)
         {
-            float errValue = rightDistanceFilter.getCurrentValue() - _distance;
-            Drive(forward, PDreg->update(errValue));
+            float errValue = leftDistanceFilter.getCurrentValue() - _distance; //потом свапнуть на райт
+            float err = PDreg->update(errValue);
+            Drive(forward, err);
+            Serial.print("left sonar: ");
+            Serial.println(leftDistanceFilter.getCurrentValue());
+            Serial.print("forwardVal: ");
+            Serial.println(forwardDistanceFilter.getCurrentValue());
+            Serial.print("error: ");
+            Serial.println(err);
             return false;
         }
         dropProcess();
+        Serial.println("END");
         return true;
     }
 };
@@ -204,7 +212,6 @@ public:
             }
 
             dropProcess();
-            Serial.println("END");
             return true;
         }
     }

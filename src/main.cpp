@@ -11,8 +11,8 @@ void setup() {
 
   startButton.setReversed(true);
 
-  while (!startButton.readState());
-  while (startButton.readState());
+  // while (!startButton.readState());
+  // while (startButton.readState());
   
   driveTrainBegin();
   intakeBegin();

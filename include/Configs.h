@@ -7,8 +7,8 @@
 #define IS_DISTANCE_SENSOR true
 #define WHEEL_DISTANCE (268.0f / 20.0f)
 
-#define ROBOT_SPEED 0.3f
-#define ETALON_DISTANCE 150.0f
+#define ROBOT_SPEED 0.2f
+#define ETALON_DISTANCE 50.0f
 
 #define ANGLE_ERROR 5.0f
 #define SINGLE_ENCODER_STEP (20.0f * 24.0f)

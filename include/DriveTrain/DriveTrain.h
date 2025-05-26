@@ -15,13 +15,7 @@ void driveTrainBegin()
 
     PDRegulator<int32_t> MainPDregulator(0.1f, 0.1f); // здесь надо вставить каэфициенты для первого действия (у нас это DriveForwardToTheLimit)
 
-    _trajectory.enqueue(new TurnByLocalCoordinates(MainPDregulator, -90));
-
-    _trajectory.enqueue(new TurnByLocalCoordinates(MainPDregulator, -90));
-
-    _trajectory.enqueue(new TurnByLocalCoordinates(MainPDregulator, -90));
-
-    _trajectory.enqueue(new TurnByLocalCoordinates(MainPDregulator, -90));
+    _trajectory.enqueue(new DrivingAlongTheWall(MainPDregulator, ETALON_DISTANCE));
 
 
     // _trajectory.enqueue(new DriveForwardToTheLimit(MainPDregulator, ETALON_DISTANCE));
