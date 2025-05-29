@@ -28,6 +28,7 @@ class DriveForwardToTheLimit : public DriveSample
 public:
     DriveForwardToTheLimit(PDRegulator<int32_t> &PDr, float distance) : DriveSample(PDr)
     {
+        abc = false;
         _distance = distance;
         kp = 0.017f; // нужны норм каэфициенты!
         // kd = 0.0000000005f;
@@ -45,6 +46,7 @@ public:
             return false;
         }
         dropProcess();
+
         return true;
     }
 };
@@ -69,6 +71,7 @@ public:
             return false;
         }
         dropProcess();
+
         return true;
     }
 };
@@ -78,10 +81,11 @@ class DrivingAlongTheWall : public DriveSample
     float _distance;
 
 public:
+    
     DrivingAlongTheWall(PDRegulator<int32_t> &PDr, float distance) : DriveSample(PDr)
     {
         _distance = distance;
-        kp = 0.005f; // нужны норм каэфициенты!
+        kp = 0.015f; // нужны норм каэфициенты!
         kd = 0.000000005f;
     }
 
@@ -89,19 +93,14 @@ public:
     {
         if (forwardDistanceFilter.getCurrentValue() > _distance)
         {
-            float errValue = leftDistanceFilter.getCurrentValue() - _distance; //потом свапнуть на райт
-            float err = PDreg->update(errValue);
-            Drive(forward, err);
-            Serial.print("left sonar: ");
-            Serial.println(leftDistanceFilter.getCurrentValue());
-            Serial.print("forwardVal: ");
-            Serial.println(forwardDistanceFilter.getCurrentValue());
-            Serial.print("error: ");
-            Serial.println(err);
+            float errValue = _distance - leftDistanceFilter.getCurrentValue(); //потом свапнуть на райт
+            errValue *= kp;
+            // float err = PDreg->update(errValue);
+            Drive(forward, errValue);
             return false;
         }
         dropProcess();
-        Serial.println("END");
+
         return true;
     }
 };
@@ -126,6 +125,7 @@ public:
             return false;
         }
         dropProcess();
+
         return true;
     }
 };
@@ -155,6 +155,7 @@ public:
             return false;
         }
         dropProcess();
+
         return true;
     }
 };
@@ -168,6 +169,7 @@ private:
 public:
     TurnByLocalCoordinates(PDRegulator<int32_t> &PDr, float targetTurn) : DriveSample(PDr)
     {
+        abc = true;
         _targetTurn = chopDegrees(targetTurn);
         kp = 1.0f; // нужны норм каэфициенты!
         kd = 1.0f;
@@ -189,7 +191,7 @@ public:
 
             if (abs(error) > ANGLE_ERROR)
             {
-                Drive(stop, ROBOT_SPEED * sgn(error));
+                Drive(stop, ROBOT_SPEED * sgn(error) * 0.5f);
                 return false;
             }
             dropProcess();

@@ -55,6 +55,7 @@ protected:
 public:
     float kp = 1.0f;
     float kd = 1.0f;
+    bool abc = false;
 
     DriveSample() {}; // для очереди
 
