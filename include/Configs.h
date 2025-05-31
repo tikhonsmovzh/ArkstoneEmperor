@@ -8,7 +8,7 @@
 #define WHEEL_DISTANCE (268.0f / 20.0f)
 
 #define ROBOT_SPEED 0.9f
-#define ETALON_DISTANCE 120.0f
+#define ETALON_DISTANCE 180.0f
 
 #define ANGLE_ERROR 5.0f
 #define SINGLE_ENCODER_STEP (20.0f * 24.0f)
@@ -16,7 +16,7 @@
 
 #define BASE_STEP_COUNT 8
 
-#define EXECUTION_LIMIT 2.0
+#define EXECUTION_LIMIT 2.5f
 #define TIME_ERROR 1.0
 
 //Intake

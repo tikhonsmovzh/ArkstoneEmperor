@@ -11,31 +11,34 @@ void setup() {
 
   startButton.setReversed(true);
 
-  while (!startButton.readState());
-  while (startButton.readState());
+  // while (!startButton.readState());
+  // while (startButton.readState());
+
+  delay(100);
   
-  // driveTrainBegin();
+  driveTrainBegin();
   intakeBegin();
   detectFloor();
 
-  delay(1000);
+  delay(100);
   
-  while (!startButton.readState());
-  while (startButton.readState());
+  // while (!startButton.readState());
+  // while (startButton.readState());
+  delay(100);
 
   intakeStart();
-  // driveTrainStart();
+  driveTrainStart();
 }
 
 void loop() {
-  static uint32_t oldTime = 0;
+  // static uint32_t oldTime = 0;
 
-  while (oldTime + 10 > millis())
-    oldTime = millis();
+  // while (oldTime + 10 > millis())
+  //   oldTime = millis();
 
   devicesUpdate();
 
-  // driveTrainUpdate();
+  driveTrainUpdate();
 
   intakeUpdate();
 }

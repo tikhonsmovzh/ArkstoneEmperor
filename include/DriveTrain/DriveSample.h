@@ -6,6 +6,7 @@
 #include "utils/PDRegulator.h"
 #include "utils/Sgn.h"
 #include "utils/ElapsedTime.h"
+#include "Intake.h"
 
 class DriveSample
 {

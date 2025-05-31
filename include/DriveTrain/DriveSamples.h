@@ -51,6 +51,75 @@ public:
     }
 };
 
+
+
+class TurnByTime : public DriveSample
+{
+    float _time;
+    ElapseTime *_timerer;
+    float g;
+
+public:
+    TurnByTime(PDRegulator<int32_t> &PDr, float time, ElapseTime &t, bool aboba) : DriveSample(PDr)
+    {
+        abc = true;
+        _time = time;
+        kp = 0.017f; // нужны норм каэфициенты!
+        // kd = 0.0000000005f;
+        kd = 0.0f;
+        _timerer = &t;
+        _timerer->reset();
+        aboba = (aboba ? 0.5 : -0.5);
+    }
+
+    bool Execute() override
+    { // энкодеры сбрасываются, все норм. ПД тоже сбрасывается
+        if (_time - _timerer->seconds() > 0)
+        {
+            Drive(forward, g);
+
+            return false;
+        }
+        dropProcess();
+
+        return true;
+    }
+};
+
+
+class StopOnPark : public DriveSample
+{
+    float _time;
+    ElapseTime *_timerer;
+    float g;
+
+public:
+    StopOnPark(PDRegulator<int32_t> &PDr, float time, ElapseTime &t) : DriveSample(PDr)
+    {
+        abc = false;
+        _time = time;
+        _timerer = &t;
+        _timerer->reset();
+    }
+
+    bool Execute() override
+    { // энкодеры сбрасываются, все норм. ПД тоже сбрасывается
+        if (_time - _timerer->seconds() > 0)
+        {
+            Drive(stop, 0);
+
+            return false;
+        }
+        if ((_time * 4) - _timerer->seconds() > 0 && _time - _timerer->seconds() > 0){
+            Drive(forward, -0.1);
+        }
+        dropProcess();
+
+        return true;
+    }
+};
+
+
 class TurnToTheWall : public DriveSample
 {
     float _distance;
@@ -113,8 +182,9 @@ public:
     TravelByEncoderValue(PDRegulator<int32_t> &PDr, float encPos) : DriveSample(PDr)
     {
         _encPos = encPos;
-        kp = 1.0f; // нужны норм каэфициенты!
-        kd = 1.0f;
+        kp = 0.001f; // нужны норм каэфициенты!
+        kd = 0.0f;
+        abc = false;
     }
 
     bool Execute() override

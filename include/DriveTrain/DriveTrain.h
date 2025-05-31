@@ -5,6 +5,7 @@
 #include "DriveTrain/DriveSamples.h"
 #include "utils/Queue.h"
 #include "utils/ElapsedTime.h"
+#include "Intake.h"
 
 // Queue<DriveSample *> _trajectory;
 DriveSample* mainMovement;
@@ -15,7 +16,7 @@ void driveTrainBegin()
 {
     rightMotor.setEncoderDirection(REVERSE);
 
-    mainMovement = new DriveForwardToTheLimit(MainPDregulator, ETALON_DISTANCE * 2);
+    mainMovement = new DriveForwardToTheLimit(MainPDregulator, ETALON_DISTANCE);
 
     // здесь надо вставить каэфициенты для первого действия (у нас это DriveForwardToTheLimit)
 
@@ -67,14 +68,37 @@ void driveTrainStart()
 
 void driveTrainUpdate()
 {
-    bool E_Ans = mainMovement->Execute() || (EXECUTION_LIMIT - _Timer.seconds()) < TIME_ERROR;
-    if (E_Ans){
+
+    bool ans = !forwardtButton.readState();
+    bool E_Ans = mainMovement->Execute();
+
+    if (ans){
+        delete mainMovement;
+        mainMovement = new TravelByEncoderValue(MainPDregulator, -200.0f);
+        mainMovement->ResetPd();
+        mainMovement->Start();
+        _Timer.reset();
+    }
+
+    // ans = ourColor == floorColor;
+
+    // if (ans && mainMovement->abc){
+    //     delete mainMovement;
+    //     mainMovement = new StopOnPark(MainPDregulator, 0.25f, _Timer);
+    //     mainMovement->ResetPd();
+    //     mainMovement->Start();
+    //     _Timer.reset();
+    // }
+
+    if (E_Ans || (EXECUTION_LIMIT - _Timer.seconds()) < TIME_ERROR){
         _Timer.reset();
 
         if (!mainMovement->abc){
-            mainMovement = new TurnByLocalCoordinates(MainPDregulator, 30 * (rand() % 2 == 0 ? -1 : 1));
+            delete mainMovement;
+            mainMovement = new TurnByTime(MainPDregulator, 0.25f, _Timer, (rand() % 2 == 0 ? true : false));
         }else{
-            mainMovement = new DriveForwardToTheLimit(MainPDregulator, ETALON_DISTANCE * 2);
+            delete mainMovement;
+            mainMovement = new DriveForwardToTheLimit(MainPDregulator, ETALON_DISTANCE);
         }
         mainMovement->ResetPd();
         mainMovement->Start();
